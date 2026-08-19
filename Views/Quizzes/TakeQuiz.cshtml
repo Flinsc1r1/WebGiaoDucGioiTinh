@@ -1,0 +1,156 @@
+﻿@model WebGiaoDucGioiTinh.Models.Lesson
+
+@{
+    ViewData["Title"] = "Ôn Tập Bài Học: " + Model.Title;
+}
+
+<div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
+    <div class="rounded-[2rem] border border-white/50 bg-white/45 p-6 shadow-glass backdrop-blur-md sm:p-10">
+        
+        <div class="mb-8 text-center border-b border-slate-200/60 pb-5">
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-teal-200/80 bg-emerald-50/80 px-3 py-1 text-xs font-medium text-teal-900">📚 Bài tập ôn luyện</span>
+            <h1 class="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">@Model.Title</h1>
+            <p class="mt-2 text-sm text-slate-600">Tổng số: <strong>@Model.Quizzes.Count</strong> câu hỏi trắc nghiệm củng cố kiến thức.</p>
+        </div>
+
+        <div id="start-screen" class="text-center py-8">
+            <p class="text-slate-700 text-base mb-6">Hệ thống đã chuẩn bị sẵn bộ câu hỏi tương ứng với nội dung bài học. Hãy nhấn nút bên dưới để bắt đầu thử sức nhé!</p>
+            <button class="rounded-2xl bg-gradient-to-r from-teal-600 to-sky-600 px-10 py-3.5 text-sm font-bold text-white shadow-lg shadow-teal-500/20 transition hover:from-teal-700 hover:to-sky-700" onclick="startLessonQuiz()">
+                Bắt đầu làm bài
+            </button>
+        </div>
+
+        <div id="game-screen" style="display: none;" class="space-y-6">
+            <div class="flex justify-between items-center text-sm font-medium text-slate-500">
+                <div>Số câu đúng: <span class="text-emerald-600 font-bold text-lg" id="correct-count">0</span></div>
+                <div>Câu hỏi: <span class="text-slate-800 font-bold" id="lbl-question-index">1</span>/@Model.Quizzes.Count</div>
+            </div>
+            
+            <div class="rounded-2xl border border-white/60 bg-white/70 p-6 shadow-inner backdrop-blur-sm text-center">
+                <h3 id="question-content" class="text-lg font-bold text-slate-800 leading-relaxed">Đang tải...</h3>
+            </div>
+            
+            <div class="grid gap-3" id="answer-container"></div>
+        </div>
+
+        <div id="result-screen" style="display: none;" class="text-center py-8">
+            <div class="text-4xl mb-3">🎉</div>
+            <h2 class="text-2xl font-bold text-slate-900">Hoàn Thành Bài Tập!</h2>
+            <p class="text-slate-500 text-sm mt-1 mb-6">Bạn đã hoàn thành các câu hỏi trắc nghiệm ôn tập của bài học này.</p>
+            
+            <div class="mx-auto max-w-sm rounded-xl border border-teal-100 bg-teal-50/40 p-5 mb-8">
+                <span class="text-xs font-bold uppercase tracking-widest text-teal-700">Kết quả của bạn</span>
+                <div class="mt-2 text-3xl font-mono font-bold text-slate-900" id="final-result-text">0 / 0 Câu đúng</div>
+            </div>
+            
+            <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                <button class="inline-flex items-center justify-center rounded-xl bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-700" onclick="restartQuiz()">Làm lại bài</button>
+                <a asp-controller="Lessons" asp-action="Details" asp-route-id="@Model.Id" class="inline-flex items-center justify-center rounded-xl border border-white/70 bg-white/70 px-6 py-2.5 text-sm font-semibold text-teal-900 shadow-sm backdrop-blur-sm transition hover:bg-white">Quay lại bài học</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let rawQuestions = @Html.Raw(Json.Serialize(Model.Quizzes.Select(q => new {
+            id = q.Id,
+            question = q.Question,
+            optionA = q.OptionA,
+            optionB = q.OptionB,
+            optionC = q.OptionC,
+            optionD = q.OptionD,
+            correctAnswer = q.CorrectAnswer != null ? q.CorrectAnswer.Trim() : ""
+        })));
+        let questions = [];
+        let currentIndex = 0;
+        let correctAnswersCount = 0;
+        let isAnswering = false;
+
+        function startLessonQuiz() {
+            if (!rawQuestions || rawQuestions.length === 0) {
+                alert("Bài học này hiện chưa có câu hỏi trắc nghiệm.");
+                return;
+            }
+            questions = [...rawQuestions];
+            document.getElementById("start-screen").style.display = "none";
+            document.getElementById("game-screen").style.display = "block";
+            currentIndex = 0;
+            correctAnswersCount = 0;
+            document.getElementById("correct-count").innerText = correctAnswersCount;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= questions.length) {
+                showFinalResult();
+                return;
+            }
+            isAnswering = false;
+            document.getElementById("lbl-question-index").innerText = currentIndex + 1;
+
+            const currentQ = questions[currentIndex];
+            document.getElementById("question-content").innerText = currentQ.question;
+            
+            const container = document.getElementById("answer-container");
+            container.innerHTML = `
+                <button class="answer-btn w-full rounded-xl border border-white/60 bg-white/70 px-5 py-3.5 text-left text-sm font-medium text-slate-700 shadow-sm transition hover:bg-teal-50/50" onclick="checkLessonAnswer('A', this)"><span class="font-bold text-teal-700 mr-2">A.</span> ${currentQ.optionA}</button>
+                <button class="answer-btn w-full rounded-xl border border-white/60 bg-white/70 px-5 py-3.5 text-left text-sm font-medium text-slate-700 shadow-sm transition hover:bg-teal-50/50" onclick="checkLessonAnswer('B', this)"><span class="font-bold text-teal-700 mr-2">B.</span> ${currentQ.optionB}</button>
+                <button class="answer-btn w-full rounded-xl border border-white/60 bg-white/70 px-5 py-3.5 text-left text-sm font-medium text-slate-700 shadow-sm transition hover:bg-teal-50/50" onclick="checkLessonAnswer('C', this)"><span class="font-bold text-teal-700 mr-2">C.</span> ${currentQ.optionC}</button>
+                <button class="answer-btn w-full rounded-xl border border-white/60 bg-white/70 px-5 py-3.5 text-left text-sm font-medium text-slate-700 shadow-sm transition hover:bg-teal-50/50" onclick="checkLessonAnswer('D', this)"><span class="font-bold text-teal-700 mr-2">D.</span> ${currentQ.optionD}</button>
+            `;
+        }
+
+        async function checkLessonAnswer(letter, btnElement) {
+            if (isAnswering) return;
+            isAnswering = true;
+            
+            const currentQ = questions[currentIndex];
+            const allButtons = document.querySelectorAll('.answer-btn');
+            allButtons.forEach(b => b.disabled = true);
+
+            try {
+                const response = await fetch('/Quizzes/CheckAnswer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ questionId: currentQ.id, selectedAnswer: letter })
+                });
+                const result = await response.json();
+                
+                if (result.isCorrect) {
+                    correctAnswersCount++;
+                    document.getElementById("correct-count").innerText = correctAnswersCount;
+                    btnElement.className = "answer-btn w-full rounded-xl bg-emerald-600 px-5 py-3.5 text-left text-sm font-bold text-white shadow-md";
+                } else {
+                    btnElement.className = "answer-btn w-full rounded-xl bg-rose-600 px-5 py-3.5 text-left text-sm font-bold text-white shadow-md";
+                    allButtons.forEach(b => {
+                        if (b.innerText.trim().startsWith(currentQ.correctAnswer)) {
+                            b.className = "answer-btn w-full rounded-xl bg-emerald-600 px-5 py-3.5 text-left text-sm font-bold text-white shadow-md opacity-80";
+                        }
+                    });
+                }
+                
+                setTimeout(() => {
+                    currentIndex++;
+                    loadQuestion();
+                }, 1500);
+
+            } catch (error) {
+                isAnswering = false;
+                allButtons.forEach(b => b.disabled = false);
+            }
+        }
+
+        function showFinalResult() {
+            document.getElementById("game-screen").style.display = "none";
+            document.getElementById("result-screen").style.display = "block";
+            document.getElementById("final-result-text").innerText = `${correctAnswersCount} / ${questions.length} Câu đúng`;
+        }
+
+        function restartQuiz() {
+            document.getElementById("result-screen").style.display = "none";
+            startLessonQuiz();
+        }
+    </script>
+}

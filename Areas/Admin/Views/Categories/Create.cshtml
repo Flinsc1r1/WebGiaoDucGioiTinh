@@ -1,0 +1,21 @@
+@model Category
+@{
+    ViewData["Title"] = "Thêm danh mục";
+}
+
+<form asp-action="Create" method="post" class="max-w-lg space-y-4">
+    <div asp-validation-summary="ModelOnly" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"></div>
+    <div>
+        <label asp-for="Name" class="mb-1 block text-sm font-medium text-slate-700">Tên danh mục</label>
+        <input asp-for="Name" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500" />
+        <span asp-validation-for="Name" class="text-sm text-red-600"></span>
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">Lưu</button>
+        <a asp-action="Index" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Hủy</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

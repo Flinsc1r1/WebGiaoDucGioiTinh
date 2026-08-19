@@ -1,0 +1,179 @@
+﻿@model WebGiaoDucGioiTinh.Models.FeaturedNews
+
+@{
+    ViewData["Title"] = "Đăng bài viết mới";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+
+<div class="container my-5">
+    <div class="card border-0 shadow-sm mx-auto" style="max-width: 950px; background-color: #1e2130; border-radius: 16px; color: #f8f9fa;">
+
+        <div class="card-header text-center border-0 pt-5 pb-3" style="background: transparent;">
+            <h2 class="fw-bold" style="color: #ff69b4; letter-spacing: 0.5px;">📝 ĐĂNG BÀI VIẾT MỚI</h2>
+            <p class="text-muted small mb-0">Hệ thống Đa phương tiện Siêu nhẹ — Gắn Link trực tiếp không lo sập web</p>
+        </div>
+
+        <div class="card-body px-4 px-md-5 pb-5">
+            <form asp-action="Create" method="post" id="newsForm">
+                @Html.AntiForgeryToken()
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-semibold mb-2" style="color: #ffaaee;">Tiêu đề bài viết</label>
+                    <input asp-for="Title" class="form-control form-control-lg text-white border-secondary"
+                           style="background-color: #131520; border-radius: 10px; font-size: 1.05rem;"
+                           placeholder="Nhập tiêu đề bài báo..." required />
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <div class="form-group">
+                            <label class="form-label fw-semibold mb-2" style="color: #ffaaee;">Chuyên mục (Tag)</label>
+                            <input asp-for="Tag" class="form-control text-white border-secondary py-2"
+                                   style="background-color: #131520; border-radius: 10px;"
+                                   placeholder="Ví dụ: Kỹ năng, Tâm lý..." required />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label fw-semibold mb-2" style="color: #ffaaee;">Ảnh đại diện bài báo (Dán link ảnh từ mạng)</label>
+                            <input type="text" asp-for="Img" class="form-control text-white border-secondary py-2"
+                                   style="background-color: #131520; border-radius: 10px;"
+                                   placeholder="Dán địa chỉ hình ảnh (https://...)" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-semibold mb-2" style="color: #ffaaee;">Mô tả ngắn (Hiển thị ở trang danh sách)</label>
+                    <textarea asp-for="Desc" class="form-control text-white border-secondary p-3" rows="3"
+                              style="background-color: #131520; border-radius: 10px; resize: none;"
+                              placeholder="Tóm tắt ngắn gọn nội dung bài viết..." required></textarea>
+                </div>
+
+                <div class="p-4 mb-4 rounded border border-secondary" style="background-color: #1a1d29;">
+                    <h6 class="fw-bold mb-3" style="color: #ff69b4;">🛠️ Công cụ gán nhanh Đa phương tiện trực tuyến:</h6>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label small text-muted">Dán link YouTube (Hỗ trợ clip dài 30p+):</label>
+                            <div class="input-group">
+                                <input type="text" id="customVideoUrl" class="form-control text-white bg-dark border-secondary" placeholder="https://www.youtube.com/watch?v=...">
+                                <button class="btn btn-primary" type="button" id="btnInsertCustomVideo" style="background-color: #ff69b4; border: none;">Chèn Video</button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small text-muted">Dán địa chỉ liên kết ảnh (Sao chép từ Google):</label>
+                            <div class="input-group">
+                                <input type="text" id="customImageUrl" class="form-control text-white bg-dark border-secondary" placeholder="https://.../image.jpg">
+                                <button class="btn btn-info" type="button" id="btnInsertCustomImage" style="background-color: #ffaaee; border: none; color: #1e2130; font-weight: bold;">Chèn Ảnh</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-5">
+                    <label class="form-label fw-semibold mb-2" style="color: #ffaaee;">Nội dung bài viết chi tiết</label>
+                    <div class="summernote-theme-wrapper">
+                        <textarea asp-for="Content" id="SummernoteEditor" required></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center align-items-center gap-3 pt-2">
+                    <button type="submit" class="btn px-5 py-25 fw-bold shadow-sm text-white"
+                            style="background-color: #ff69b4; border-radius: 30px; font-size: 1rem; transition: all 0.2s;">
+                        🚀 Xuất bản bài báo
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4 py-25"
+                       style="border-radius: 30px; font-size: 1rem;">
+                        Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+    $('#SummernoteEditor').summernote({
+    placeholder: 'Nhập nội dung văn bản. Sử dụng công cụ gán link ở trên để thêm hình ảnh và video nha...',
+    tabsize: 2,
+    height: 400,
+    toolbar: [
+    ['style', ['style']],
+    ['font', ['bold', 'underline', 'clear']],
+    ['color', ['color']],
+    ['para', ['ul', 'ol', 'paragraph']],
+    ['table', ['table']],
+    ['insert', ['link', 'picture']],
+    ['view', ['fullscreen', 'codeview']]
+    ],
+    callbacks: {
+    onImageUpload: function (files) {
+    alert("Tính năng tải ảnh đã được tắt để giữ web chạy siêu tốc. Bạn vui lòng sao chép link ảnh dán vào ô 'Chèn Ảnh' phía trên nhé!");
+    },
+    onPaste: function (e) {
+    var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+    if (bufferText && bufferText.match(/\.(jpeg|jpg|gif|png|webp)/i) != null) {
+    e.preventDefault();
+    setTimeout(function () {
+    $('#SummernoteEditor').summernote('insertImage', bufferText);
+    }, 10);
+    }
+    }
+    }
+    });
+
+    $('#btnInsertCustomVideo').on('click', function () {
+    var url = $('#customVideoUrl').val().trim();
+    if (url === "") { alert("Vui lòng dán link YouTube vào trước đã nhé!"); return; }
+
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    var videoId = '';
+    if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split(/[?#]/)[0];
+    else if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
+
+    if (videoId) {
+    var iframeHtml = '<div class="video-container" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:15px 0;border-radius:8px;"><iframe src="https://www.youtube.com/embed/' + videoId + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe></div><p><br></p>';
+    $('#SummernoteEditor').summernote('pasteHTML', iframeHtml);
+    $('#customVideoUrl').val('');
+    } else alert("Không tìm thấy ID video hợp lệ từ đường link này.");
+    } else alert("Hệ thống hiện tại chỉ hỗ trợ link video từ YouTube thôi nhen!");
+    });
+
+    $('#btnInsertCustomImage').on('click', function () {
+    var imageUrl = $('#customImageUrl').val().trim();
+    if (imageUrl === "") { alert("Vui lòng dán liên kết hình ảnh từ Google vào trước nhé!"); return; }
+
+    $('#SummernoteEditor').summernote('insertImage', imageUrl);
+    $('#customImageUrl').val('');
+    });
+
+    $('.note-editor').css({ 'background-color': '#ffffff', 'color': '#000000', 'border-radius': '12px', 'overflow': 'hidden' });
+    $('.note-editable').css({ 'background-color': '#ffffff', 'color': '#000000', 'font-size': '16px' });
+    });
+</script>
+
+<style>
+    .form-control:focus {
+    background-color: #131520 !important;
+    color: #ffffff !important;
+    border-color: #ff69b4 !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 105, 180, 0.25) !important;
+    }
+
+    .form-control::placeholder {
+    color: #6c757d !important;
+    opacity: 1;
+    }
+
+    .btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+    }
+</style>

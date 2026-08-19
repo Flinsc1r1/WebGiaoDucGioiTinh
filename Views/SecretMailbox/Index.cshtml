@@ -1,0 +1,81 @@
+@model AnonymousQuestion
+@{
+    ViewData["Title"] = "Hộp thư thầm kín";
+    var sent = TempData["SecretSent"] as bool? == true;
+    var yourCode = TempData["YourCode"] as string;
+}
+
+<div class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+    <div class="rounded-[2rem] border border-white/50 bg-white/45 p-6 shadow-glass backdrop-blur-md sm:p-10">
+        <div class="mb-6 text-center sm:text-left">
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50/80 px-3 py-1 text-xs font-medium text-teal-900" aria-hidden="true">🔐 Ẩn danh</span>
+            <h1 class="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Hộp thư thầm kín</h1>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base">
+                Bạn có thể gửi câu hỏi nhạy cảm mà <strong>không cần để lộ tên hay thông tin nhận dạng</strong>. Chúng tôi không yêu cầu đăng nhập.
+            </p>
+        </div>
+
+        @if (sent)
+        {
+            <div class="rounded-2xl border border-emerald-200/90 bg-gradient-to-br from-mint/90 to-emerald-50/90 px-5 py-6 text-center shadow-inner" role="status">
+                <p class="text-lg font-semibold text-teal-900 sm:text-xl">Câu hỏi của bạn đã được gửi đi an toàn!</p>
+
+                <div class="my-5 rounded-xl border border-white/60 bg-white/50 p-4 backdrop-blur-sm">
+                    <span class="text-xs font-bold uppercase tracking-widest text-teal-700">Mã tra cứu của bạn</span>
+                    <div class="mt-2 text-3xl font-mono font-bold tracking-widest text-slate-900">
+                        @yourCode
+                    </div>
+                    <p class="mt-2 text-xs text-teal-800">Hãy lưu lại mã này để xem phản hồi tại trang <strong>Tra cứu</strong>.</p>
+
+                    <div class="mt-3 flex justify-center gap-2">
+                        <button type="button" onclick="copyCode('@yourCode')" class="inline-flex items-center gap-1 rounded-lg bg-teal-700/10 px-3 py-1.5 text-xs font-medium text-teal-900 transition hover:bg-teal-700/20">
+                            📋 Sao chép mã
+                        </button>
+                    </div>
+                </div>
+
+                <p class="mt-2 text-sm text-teal-800/90">Cảm ơn bạn đã tin tưởng. Chuyên gia sẽ sớm phản hồi!-Nếu bạn cần tư vấn trực tiếp vui lòng liên hệ qua số điện thoại 0792399147.</p>
+
+                <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <a asp-action="LookUp" class="inline-flex items-center justify-center rounded-xl bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-700">Đến trang Tra cứu</a>
+                    <a asp-controller="Home" asp-action="Index" class="inline-flex items-center justify-center rounded-xl border border-white/70 bg-white/70 px-5 py-2.5 text-sm font-semibold text-teal-900 shadow-sm backdrop-blur-sm transition hover:bg-white">Về trang chủ</a>
+                </div>
+            </div>
+
+            <script>
+                        (function saveCodeToLocalStorage() {
+                            let history = JSON.parse(localStorage.getItem('anonymous_mailbox_history')) || [];
+                            let code = '@yourCode';
+                            if (code && !history.includes(code)) {
+                                history.push(code);
+                                localStorage.setItem('anonymous_mailbox_history', JSON.stringify(history));
+                            }
+                        })();
+
+                        function copyCode(text) {
+                            navigator.clipboard.writeText(text);
+                            alert("Đã sao chép mã số bí mật!");
+                        }
+            </script>
+        }
+        else
+        {
+            <form asp-action="Index" method="post" class="space-y-4">
+                <div asp-validation-summary="ModelOnly" class="rounded-xl border border-red-200/80 bg-red-50/90 px-4 py-3 text-sm text-red-900"></div>
+                <div>
+                    <label asp-for="Content" class="mb-2 block text-sm font-medium text-slate-800">Câu hỏi của bạn</label>
+                    <textarea asp-for="Content" rows="8" class="w-full rounded-2xl border border-white/60 bg-white/70 px-4 py-3 text-sm leading-relaxed text-slate-800 shadow-inner backdrop-blur-sm placeholder:text-slate-400 focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-amber-200/80" placeholder="Viết ở đây… (không ghi tên, trường, SĐT)"></textarea>
+                    <span asp-validation-for="Content" class="mt-1 block text-sm text-red-600"></span>
+                </div>
+                <p class="text-xs text-slate-500">Mã tra cứu ẩn danh sẽ được cấp sau khi bạn nhấn gửi.</p>
+                <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-teal-600 to-sky-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-teal-500/20 transition hover:from-teal-700 hover:to-sky-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/70 sm:w-auto sm:px-10">
+                    Gửi câu hỏi bí mật
+                </button>
+            </form>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

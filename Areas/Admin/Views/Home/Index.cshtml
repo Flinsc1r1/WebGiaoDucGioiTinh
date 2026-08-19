@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Tổng quan";
+}
+
+<p class="mb-6 text-sm text-slate-600">Chọn mục cần quản lý dữ liệu.</p>
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:shadow-md">
+        <h2 class="font-semibold text-slate-900">Danh mục</h2>
+        <p class="mt-1 text-sm text-slate-500">CRUD phân loại bài học</p>
+    </a>
+    <a asp-area="Admin" asp-controller="Lessons" asp-action="Index" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:shadow-md">
+        <h2 class="font-semibold text-slate-900">Bài học</h2>
+        <p class="mt-1 text-sm text-slate-500">Nội dung, video, danh mục</p>
+    </a>
+    <a asp-area="Admin" asp-controller="Quizzes" asp-action="Index" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:shadow-md">
+        <h2 class="font-semibold text-slate-900">Quiz</h2>
+        <p class="mt-1 text-sm text-slate-500">Câu hỏi trắc nghiệm</p>
+    </a>
+    <a asp-area="Admin" asp-controller="AnonymousQuestions" asp-action="Index" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:shadow-md">
+        <h2 class="font-semibold text-slate-900">Hộp thư thầm kín</h2>
+        <p class="mt-1 text-sm text-slate-500">Câu hỏi ẩn danh</p>
+    </a>
+    <a asp-area="Admin" asp-controller="AdminNews" asp-action="Index" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+        <h2 class="font-semibold text-slate-900">Tin tức & Bài viết</h2>
+        <p class="mt-1 text-sm text-slate-500">Đăng tải và chỉnh sửa bài viết trang chủ</p>
+    </a>
+</div>
+<p class="mt-8 text-xs text-slate-500">Khu vực demo — chưa có đăng nhập. Ẩn liên kết “Quản lý” ở footer bằng cấu hình <code class="rounded bg-slate-200 px-1">SiteSettings:ShowAdminLink</code> = false.</p>

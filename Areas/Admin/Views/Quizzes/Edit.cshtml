@@ -1,0 +1,59 @@
+@model Quiz
+@{
+    ViewData["Title"] = "Sửa câu hỏi";
+}
+
+<form asp-action="Edit" method="post" class="max-w-3xl space-y-4">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"></div>
+    <div>
+        <label asp-for="LessonId" class="mb-1 block text-sm font-medium text-slate-700">Bài học</label>
+        <select asp-for="LessonId" asp-items="ViewBag.LessonId" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"></select>
+        <span asp-validation-for="LessonId" class="text-sm text-red-600"></span>
+    </div>
+    <div>
+        <label asp-for="Question" class="mb-1 block text-sm font-medium text-slate-700">Câu hỏi</label>
+        <textarea asp-for="Question" rows="3" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"></textarea>
+        <span asp-validation-for="Question" class="text-sm text-red-600"></span>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+            <label asp-for="OptionA" class="mb-1 block text-sm font-medium text-slate-700">Đáp án A</label>
+            <input asp-for="OptionA" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+            <span asp-validation-for="OptionA" class="text-sm text-red-600"></span>
+        </div>
+        <div>
+            <label asp-for="OptionB" class="mb-1 block text-sm font-medium text-slate-700">Đáp án B</label>
+            <input asp-for="OptionB" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+            <span asp-validation-for="OptionB" class="text-sm text-red-600"></span>
+        </div>
+        <div>
+            <label asp-for="OptionC" class="mb-1 block text-sm font-medium text-slate-700">Đáp án C</label>
+            <input asp-for="OptionC" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+            <span asp-validation-for="OptionC" class="text-sm text-red-600"></span>
+        </div>
+        <div>
+            <label asp-for="OptionD" class="mb-1 block text-sm font-medium text-slate-700">Đáp án D</label>
+            <input asp-for="OptionD" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+            <span asp-validation-for="OptionD" class="text-sm text-red-600"></span>
+        </div>
+    </div>
+    <div>
+        <label asp-for="CorrectAnswer" class="mb-1 block text-sm font-medium text-slate-700">Đáp án đúng</label>
+        <select asp-for="CorrectAnswer" class="w-full max-w-xs rounded-lg border border-slate-300 px-3 py-2 text-sm">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+        </select>
+        <span asp-validation-for="CorrectAnswer" class="text-sm text-red-600"></span>
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">Cập nhật</button>
+        <a asp-action="Index" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Hủy</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

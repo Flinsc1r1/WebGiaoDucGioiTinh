@@ -1,0 +1,103 @@
+@model Lesson
+@{
+    ViewData["Title"] = Model.Title;
+    var embedUrl = YoutubeVideoHelper.GetEmbedUrl(Model.VideoUrl);
+}
+
+<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <nav class="mb-6 text-sm text-slate-600" aria-label="Breadcrumb">
+        <ol class="flex flex-wrap items-center gap-2">
+            <li><a asp-controller="Lessons" asp-action="Index" class="font-medium text-teal-800 underline-offset-4 hover:underline">Bài học</a></li>
+            <li aria-hidden="true">/</li>
+            <li class="text-slate-500">@Model.Category.Name</li>
+            <li aria-hidden="true">/</li>
+            <li class="font-medium text-slate-800">@Model.Title</li>
+        </ol>
+    </nav>
+
+    <div class="rounded-[2rem] border border-white/50 bg-white/40 p-6 shadow-glass backdrop-blur-md sm:p-8 lg:p-10">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">@Model.Title</h1>
+        <p class="mt-2 text-sm text-slate-600 sm:text-base">
+            Danh mục: <span class="font-medium text-teal-900">@Model.Category.Name</span>
+            @if (Model.Quizzes.Count > 0)
+            {
+                <span class="text-slate-400"> · </span>
+                <span>@Model.Quizzes.Count câu hỏi trắc nghiệm kèm bài</span>
+            }
+        </p>
+
+        <div class="mt-8 grid gap-8 lg:grid-cols-2 lg:gap-10 lg:items-start">
+            <div class="lg:sticky lg:top-28">
+                <h2 class="sr-only">Video minh họa</h2>
+                @if (embedUrl is not null)
+                {
+                    <div class="overflow-hidden rounded-2xl border border-white/60 bg-slate-900/5 shadow-inner ring-1 ring-white/40">
+                        <div class="aspect-video w-full">
+                            <iframe class="h-full w-full"
+                                    src="@embedUrl"
+                                    title="Video bài học: @Model.Title"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-xs text-slate-500">Video từ YouTube — nếu không xem được, hãy kiểm tra kết nối mạng hoặc chính sách của trường/mạng nội bộ.</p>
+                }
+                else
+                {
+                    <div class="flex aspect-video w-full flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300/80 bg-white/40 p-6 text-center text-slate-600 backdrop-blur-sm">
+                        <span class="text-4xl" aria-hidden="true">▶</span>
+                        <p class="mt-2 text-sm font-medium">Chưa có video cho bài học này.</p>
+                        <p class="mt-1 text-xs text-slate-500">Bạn vẫn có thể đọc nội dung bên cạnh và làm quiz bên dưới.</p>
+                    </div>
+                }
+            </div>
+
+            <div>
+                <div class="lesson-html max-w-none rounded-2xl border border-white/60 bg-white/50 p-5 text-base leading-relaxed text-slate-800 backdrop-blur-sm sm:p-6 [&_a]:font-medium [&_a]:text-teal-800 [&_a]:underline-offset-2 [&_a]:hover:underline [&_em]:italic [&_p]:mb-4 [&_p:last-child]:mb-0 [&_strong]:font-semibold [&_strong]:text-slate-900">
+                    @Html.Raw(Model.Content)
+                </div>
+                <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                    @if (Model.Quizzes.Count > 0)
+                    {
+                        <a asp-controller="Quizzes" asp-action="TakeQuiz" asp-route-id="@Model.Id"
+                           class="inline-flex items-center justify-center rounded-2xl bg-sunny px-6 py-3.5 text-sm font-semibold text-amber-950 shadow-sm ring-1 ring-amber-200/90 transition hover:bg-sunny-hover hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2">
+                            Làm bài Quiz ngay
+                        </a>
+                    }
+                    <a asp-action="Index"
+                       class="inline-flex items-center justify-center rounded-2xl border border-white/70 bg-white/50 px-6 py-3.5 text-sm font-semibold text-teal-900 shadow-sm backdrop-blur-sm transition hover:bg-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2">
+                        ← Quay lại danh sách
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <section id="phan-quiz" class="mt-12 scroll-mt-28 border-t border-white/50 pt-10" aria-labelledby="quiz-heading">
+            <div class="rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50/90 to-mint/50 p-6 sm:p-8">
+                <h2 id="quiz-heading" class="text-lg font-semibold text-slate-900 sm:text-xl">Ôn tập trắc nghiệm</h2>
+                <p class="mt-2 text-sm text-slate-600 sm:text-base">
+                    @if (Model.Quizzes.Count > 0)
+                    {
+                        <text>Bài có <strong>@Model.Quizzes.Count</strong> câu hỏi. Làm quiz để củng cố kiến thức; đáp án đúng/sai sẽ hiển thị ngay sau khi nộp bài.</text>
+                    }
+                    else
+                    {
+                        <text>Quiz cho bài này đang được bổ sung.</text>
+                    }
+                </p>
+            </div>
+        </section>
+
+        @if (Model.Quizzes.Count > 0)
+        {
+            <div class="mt-10 flex justify-center px-2">
+                <a asp-controller="Quizzes" asp-action="TakeQuiz" asp-route-id="@Model.Id"
+                   class="inline-flex w-full max-w-xl items-center justify-center rounded-2xl bg-sunny px-8 py-5 text-center text-lg font-bold tracking-tight text-amber-950 shadow-lg shadow-amber-200/50 ring-2 ring-amber-200/90 transition hover:bg-sunny-hover hover:shadow-xl focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/80 sm:text-xl md:py-6 md:text-2xl">
+                    Bắt đầu làm bài Quiz
+                </a>
+            </div>
+        }
+    </div>
+</div>

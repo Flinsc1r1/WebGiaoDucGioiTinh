@@ -1,0 +1,17 @@
+@model Quiz
+@{
+    ViewData["Title"] = "Xóa câu hỏi";
+}
+
+<div class="max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <p class="text-sm text-slate-600">Xóa câu hỏi sau?</p>
+    <p class="mt-2 text-sm font-medium text-slate-900">@Model.Question</p>
+    <p class="mt-1 text-xs text-slate-500">Bài: @Model.Lesson?.Title</p>
+    <form asp-action="Delete" method="post" class="mt-6">
+        <input type="hidden" asp-for="Id" />
+        <div class="flex gap-2">
+            <button type="submit" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Xóa</button>
+            <a asp-action="Index" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Hủy</a>
+        </div>
+    </form>
+</div>

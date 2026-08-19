@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Quản trị</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+        theme: {
+        extend: {
+        colors: {
+        mint: '#D1FAE5',
+        'soft-blue': '#DBEAFE',
+        },
+        },
+        },
+        };
+    </script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800 antialiased">
+    <div class="flex min-h-screen flex-col md:flex-row">
+        <aside class="border-b border-slate-200 bg-slate-900 text-slate-100 md:w-56 md:border-b-0 md:border-r">
+            <div class="p-4">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="text-sm font-bold tracking-wide text-white">ADMIN</a>
+                <p class="mt-1 text-xs text-slate-400">Giáo dục giới tính</p>
+            </div>
+            <nav class="flex flex-wrap gap-1 px-2 pb-4 md:flex-col md:px-2">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="rounded-lg px-3 py-2 text-sm hover:bg-slate-800">Tổng quan</a>
+                <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="rounded-lg px-3 py-2 text-sm hover:bg-slate-800">Danh mục</a>
+                <a asp-area="Admin" asp-controller="Lessons" asp-action="Index" class="rounded-lg px-3 py-2 text-sm hover:bg-slate-800">Bài học</a>
+                <a asp-area="Admin" asp-controller="Quizzes" asp-action="Index" class="rounded-lg px-3 py-2 text-sm hover:bg-slate-800">Quiz</a>
+                <a asp-area="Admin" asp-controller="AnonymousQuestions" asp-action="Index" class="rounded-lg px-3 py-2 text-sm hover:bg-slate-800">Hộp thư thầm kín</a>
+
+                <a asp-area="Admin" asp-controller="AdminNews" asp-action="Index" class="rounded-lg px-3 py-2 text-sm hover:bg-slate-800">Tin tức & Bài viết</a>
+
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="mt-2 rounded-lg px-3 py-2 text-sm text-mint hover:bg-slate-800">← Về trang chủ</a>
+            </nav>
+        </aside>
+
+        <div class="flex flex-1 flex-col">
+            <header class="border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
+                <h1 class="text-lg font-semibold text-slate-900 sm:text-xl">@ViewData["Title"]</h1>
+            </header>
+            <main class="flex-1 p-4 sm:p-6">
+                @if (TempData["Success"] is string ok && !string.IsNullOrEmpty(ok))
+                {
+                    <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900" role="status">@ok</div>
+                }
+                @if (TempData["Error"] is string err && !string.IsNullOrEmpty(err))
+                {
+                    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900" role="alert">@err</div>
+                }
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

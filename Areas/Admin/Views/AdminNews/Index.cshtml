@@ -1,0 +1,87 @@
+﻿@model IEnumerable<WebGiaoDucGioiTinh.Models.FeaturedNews>
+
+<div class="container mx-auto max-w-5xl px-4 py-8 text-slate-800" style="margin-top: 100px; font-family: 'Segoe UI', sans-serif;">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 border-b border-slate-200 pb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800">🛠️ Hệ thống quản lý tin tức (Admin)</h1>
+            <p class="text-sm text-slate-500 mt-1">Nơi Admin có thể theo dõi và thêm mới các bài viết hệ thống</p>
+        </div>
+        <a asp-action="Create" class="px-5 py-3 bg-pink-500 text-white font-bold rounded-xl hover:bg-pink-600 transition-all shadow-md shadow-pink-500/20 text-sm">
+            ➕ Viết bài mới ngay
+        </a>
+    </div>
+
+    <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-50 text-slate-600 text-sm font-semibold border-b border-slate-200">
+                    <th class="p-4 w-20 text-center">Ảnh</th>
+                    <th class="p-4">Tiêu đề bài viết</th>
+                    <th class="p-4 w-32">Chuyên mục</th>
+                    <th class="p-4 w-32 text-center">Ngày đăng</th>
+                    <th class="p-4 w-24 text-center">Hành động</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="p-4 text-center">
+                                <img src="@item.Img" alt="Thumb" class="w-12 h-12 object-cover rounded-xl shadow-sm border border-slate-100 mx-auto" />
+                            </td>
+                            <td class="p-4 font-medium text-slate-700">
+                                <a asp-controller="Home" asp-action="Details" asp-route-id="@item.Id" target="_blank" class="hover:text-pink-500 transition-colors">
+                                    @item.Title
+                                </a>
+                            </td>
+                            <td class="p-4">
+                                <span class="bg-sky-50 text-sky-600 px-2.5 py-1 rounded-lg text-xs font-semibold">
+                                    @item.Tag
+                                </span>
+                            </td>
+                            <td class="p-4 text-center text-slate-500">
+                                @item.CreatedDate.ToString("dd/MM/yyyy")
+                            </td>
+                            <td class="p-4 text-center">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="text-xs font-bold text-sky-600 hover:text-sky-800 border border-sky-200 bg-sky-50/50 px-2.5 py-1.5 rounded-lg transition-all">
+                                    ✏️ Sửa
+                                </a>
+                            </td>
+                        </tr>
+                        <td class="p-4 text-center">
+                            <div class="flex flex-col gap-2">
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="text-xs font-bold text-sky-600 hover:text-sky-800 border border-sky-200 bg-sky-50/50 px-2.5 py-1.5 rounded-lg transition-all">
+                                    ✏️ Sửa
+                                </a>
+
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="text-xs font-bold text-pink-600 hover:text-pink-800 border border-pink-200 bg-pink-50/50 px-2.5 py-1.5 rounded-lg transition-all">
+                                        🗑️ Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="p-8 text-center text-slate-400 italic">
+                            Chưa có bài viết nào được tạo. Hãy bấm nút "Viết bài mới ngay" ở trên nhé ní!
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-6">
+        <a href="/" class="text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors">⬅️ Quay về Trang chủ</a>
+    </div>
+</div>

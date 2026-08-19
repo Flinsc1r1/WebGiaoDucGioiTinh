@@ -1,0 +1,18 @@
+@model Lesson
+@{
+    ViewData["Title"] = "Xóa bài học";
+    var quizCount = (int)(ViewBag.QuizCount ?? 0);
+}
+
+<div class="max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <p class="text-sm text-slate-600">Xóa bài học sẽ xóa luôn <strong>@quizCount</strong> câu quiz gắn với bài này.</p>
+    <p class="mt-2 text-lg font-semibold text-slate-900">@Model.Title</p>
+    <p class="mt-1 text-sm text-slate-500">Danh mục: @Model.Category?.Name</p>
+    <form asp-action="Delete" method="post" class="mt-6">
+        <input type="hidden" asp-for="Id" />
+        <div class="flex gap-2">
+            <button type="submit" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Xóa</button>
+            <a asp-action="Index" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Hủy</a>
+        </div>
+    </form>
+</div>

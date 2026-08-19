@@ -1,0 +1,30 @@
+@model Category
+@{
+    ViewData["Title"] = "Sửa danh mục";
+}
+
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-slate-900">Sửa danh mục</h1>
+    <p class="text-sm text-slate-500 mt-1">Danh mục này hiện đang có <b class="text-teal-700">@ViewBag.LessonCount</b> bài học.</p>
+</div>
+
+<form asp-action="Edit" method="post" class="max-w-lg space-y-4">
+    <input type="hidden" asp-for="Id" />
+    
+    <div asp-validation-summary="ModelOnly" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"></div>
+    
+    <div>
+        <label asp-for="Name" class="mb-1 block text-sm font-medium text-slate-700">Tên danh mục</label>
+        <input asp-for="Name" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500" />
+        <span asp-validation-for="Name" class="text-sm text-red-600"></span>
+    </div>
+
+    <div class="flex gap-2 pt-2">
+        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition">Cập nhật</button>
+        <a asp-action="Index" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">Hủy</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

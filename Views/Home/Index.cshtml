@@ -1,0 +1,106 @@
+﻿@using WebGiaoDucGioiTinh.Models
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="relative min-h-screen w-full overflow-hidden bg-[#f8fafc]">
+    <div class="pointer-events-none absolute inset-0 z-0">
+        <div class="absolute -left-[10%] -top-[10%] h-[70vw] w-[70vw] rounded-full opacity-60 blur-[120px]" style="background: radial-gradient(circle, #bae6fd 0%, transparent 70%);"></div>
+        <div class="absolute -right-[5%] top-[0%] h-[60vw] w-[60vw] rounded-full opacity-50 blur-[100px]" style="background: radial-gradient(circle, #fbcfe8 0%, transparent 70%);"></div>
+    </div>
+
+    <section class="relative z-10 mx-auto max-w-6xl px-4 py-12">
+        <div class="rounded-[3rem] border border-white/80 bg-white/40 p-8 shadow-2xl shadow-sky-100/50 backdrop-blur-3xl sm:p-12 lg:p-16">
+            <div class="grid items-center gap-12 lg:grid-cols-2">
+                <div class="text-center lg:text-left" data-aos="fade-right">
+                    <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/60 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-sky-700 shadow-sm">
+                        An toàn · Tôn trọng · Đồng hành
+                    </p>
+                    <h1 class="text-4xl font-extrabold leading-tight text-slate-900 sm:text-5xl">
+                        Hành trình trưởng thành - <span class="text-brand-blue">Hiểu về bản thân</span>
+                    </h1>
+                    <p class="mt-6 text-lg leading-relaxed text-slate-600">
+                        Nội dung được trình bày tinh tế, nhân văn và có cơ sở khoa học, giúp bạn tự tin chăm sóc sức khỏe và phát triển lành mạnh.
+                    </p>
+                    <div class="mt-10 flex flex-col gap-4 sm:flex-row lg:justify-start">
+                        <a href="#news-section" class="inline-flex items-center justify-center rounded-2xl bg-brand-pink px-8 py-4 text-sm font-bold text-white shadow-lg shadow-pink-200 transition hover:scale-105 hover:bg-pink-600">
+                            Đọc tin mới
+                        </a>
+                        <a asp-controller="Quizzes" asp-action="GeneralQuiz" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white/90 px-8 py-4 text-sm font-bold text-slate-700 transition hover:bg-white hover:scale-105">
+                            Thử thách kiến thức
+                        </a>
+                    </div>
+                </div>
+                <div class="flex justify-center" data-aos="zoom-in">
+                    <img src="~/images/anhgdgt-removebg-preview.png" alt="Giáo dục giới tính" class="h-auto w-full max-w-md drop-shadow-2xl transition-transform hover:scale-105" />
+                </div>
+            </div>
+
+            <div id="news-section" class="mt-20">
+                <div class="mb-10 flex flex-col items-center justify-between gap-4 border-b border-slate-100 pb-8 sm:flex-row sm:items-end">
+                    <div class="text-center sm:text-left">
+                        <h2 class="text-3xl font-bold tracking-tight text-slate-800">Kiến thức & Tin tức mới</h2>
+                        <p class="mt-2 text-slate-500">Những thông tin hữu ích được cập nhật thực tế từ hệ thống quản lý</p>
+                    </div>
+                </div>
+                <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    @if (ViewBag.FeaturedNews != null)
+                    {
+                        foreach (var news in (IEnumerable<WebGiaoDucGioiTinh.Models.FeaturedNews>)ViewBag.FeaturedNews)
+                        {
+                            <div class="group flex flex-col overflow-hidden rounded-[2rem] bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                                <div class="relative h-52 overflow-hidden">
+                                    <img src="@news.Img" alt="@news.Title" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-110" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                                    <span class="absolute left-5 top-5 rounded-xl bg-white/95 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-pink backdrop-blur-sm shadow-sm">
+                                        @news.Tag
+                                    </span>
+                                </div>
+
+                                <div class="flex flex-1 flex-col p-7">
+                                    <a asp-controller="Home" asp-action="Details" asp-route-id="@news.Id">
+                                        <h4 class="text-xl font-bold leading-snug text-slate-800 transition-colors hover:text-brand-blue group-hover:text-brand-blue">
+                                            @news.Title
+                                        </h4>
+                                    </a>
+                                    <p class="mt-4 text-sm leading-relaxed text-slate-500 line-clamp-3">
+                                        @news.Desc
+                                    </p>
+
+                                    <div class="mt-auto pt-6 flex items-center justify-between border-t border-slate-50">
+                                        <div class="flex items-center gap-2 text-[11px] font-medium text-slate-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            @news.CreatedDate.ToString("dd/MM/yyyy")
+                                        </div>
+                                        <a asp-controller="Home" asp-action="Details" asp-route-id="@news.Id" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-brand-pink transition-all duration-300 group-hover:bg-brand-pink group-hover:text-white">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div id="features" class="mt-20 grid gap-6 border-t border-slate-100 pt-12 sm:grid-cols-3">
+                <div class="rounded-3xl bg-white/50 p-6 text-center shadow-sm backdrop-blur-md transition hover:bg-white hover:shadow-md">
+                    <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 text-xl shadow-inner">📚</div>
+                    <h3 class="font-bold text-slate-800">Kiến thức rõ ràng</h3>
+                </div>
+                <div class="rounded-3xl bg-white/50 p-6 text-center shadow-sm backdrop-blur-md transition hover:bg-white hover:shadow-md">
+                    <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-pink-100 text-xl shadow-inner">🛡️</div>
+                    <h3 class="font-bold text-slate-800">An tâm & bảo vệ</h3>
+                </div>
+                <div class="rounded-3xl bg-white/50 p-6 text-center shadow-sm backdrop-blur-md transition hover:bg-white hover:shadow-md">
+                    <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 text-xl shadow-inner">💬</div>
+                    <h3 class="font-bold text-slate-800">Hỗ trợ 24/7</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

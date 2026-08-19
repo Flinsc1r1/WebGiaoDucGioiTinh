@@ -1,0 +1,49 @@
+@* Chat nổi góc phải dưới — chỉ xử lý trên trình duyệt, không gửi nội dung lên máy chủ *@
+<div id="floating-chat-root" class="pointer-events-none fixed bottom-5 right-5 z-[70] flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+    <div id="floating-chat-panel"
+         class="pointer-events-auto hidden w-[min(calc(100vw-2.5rem),22rem)] origin-bottom-right scale-95 opacity-0 transition-all duration-200 ease-out"
+         role="dialog"
+         aria-modal="false"
+         aria-labelledby="floating-chat-title"
+         aria-hidden="true">
+        <div class="flex max-h-[min(70vh,26rem)] flex-col overflow-hidden rounded-3xl border-2 border-emerald-200/90 bg-mint shadow-2xl shadow-emerald-900/15 ring-4 ring-white/60">
+            <div class="flex items-center gap-3 border-b border-emerald-200/70 bg-gradient-to-r from-emerald-100/90 to-teal-100/80 px-4 py-3">
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-xl shadow-inner ring-2 ring-emerald-200/80" aria-hidden="true">🌱</span>
+                <div class="min-w-0 flex-1">
+                    <h2 id="floating-chat-title" class="truncate text-sm font-bold text-teal-900">Trợ lý nhỏ</h2>
+                    <p class="text-xs text-teal-800/80">Luôn nhẹ nhàng, tôn trọng bạn</p>
+                </div>
+                <button type="button" id="floating-chat-close" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/80 text-slate-600 shadow-sm transition hover:bg-white hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="Đóng chat">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="border-b border-emerald-200/50 bg-emerald-50/60 px-3 py-2">
+                <p class="text-[11px] leading-snug text-teal-900/85">
+                    <span class="font-semibold">🔒 Riêng tư:</span> Không nhập họ tên, SĐT, địa chỉ hay ảnh nhạy cảm. Tin nhắn <span class="font-semibold">không lưu trên máy chủ</span> — chỉ hiển thị trên máy bạn.
+                </p>
+            </div>
+            <div id="floating-chat-messages" class="min-h-[11rem] flex-1 space-y-3 overflow-y-auto bg-gradient-to-b from-white/40 to-mint/50 p-3" role="log" aria-live="polite" aria-relevant="additions"></div>
+            <form id="floating-chat-form" class="border-t border-emerald-200/70 bg-white/70 p-3 backdrop-blur-sm">
+                <label for="floating-chat-input" class="sr-only">Nhập câu hỏi</label>
+                <div class="flex gap-2">
+                    <input id="floating-chat-input" type="text" maxlength="500" autocomplete="off" placeholder="Nhập câu hỏi nhỏ…" class="min-w-0 flex-1 rounded-2xl border border-emerald-200/80 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-inner placeholder:text-slate-400 focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-amber-200/80" />
+                    <button type="submit" class="shrink-0 rounded-2xl bg-gradient-to-br from-amber-300 to-sunny px-4 py-2.5 text-sm font-bold text-amber-950 shadow-md ring-1 ring-amber-200/90 transition hover:from-amber-200 hover:to-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">
+                        Gửi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <button type="button" id="floating-chat-fab"
+            class="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 via-emerald-400 to-sky-400 text-white shadow-lg shadow-teal-600/30 ring-4 ring-white/80 transition hover:scale-105 hover:shadow-xl focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/80"
+            aria-label="Mở hộp trò chuyện"
+            aria-expanded="false"
+            aria-controls="floating-chat-panel">
+        <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+    </button>
+</div>
+
+<script src="~/js/floating-chat.js" asp-append-version="true" defer></script>

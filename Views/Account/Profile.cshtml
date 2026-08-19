@@ -1,0 +1,121 @@
+@model WebGiaoDucGioiTinh.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    int progress = ViewBag.Progress ?? 0;
+}
+
+<div class="mx-auto max-w-4xl px-4 py-8" data-aos="fade-up">
+    <div class="relative overflow-hidden rounded-[2.5rem] border border-white/50 bg-white/40 p-8 shadow-glass backdrop-blur-xl">
+        <div class="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-sunny/20 blur-3xl"></div>
+        
+        <div class="flex flex-col items-center gap-6 md:flex-row md:items-start">
+            <div class="relative">
+                <div class="flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-emerald-200 to-sky-200 text-5xl shadow-inner ring-4 ring-white/80">
+                    @(string.IsNullOrEmpty(Model.FullName) ? "👤" : Model.FullName.Substring(0, 1).ToUpper())
+                </div>
+                <div class="absolute -bottom-1 -right-1 rounded-full bg-sunny p-2 shadow-sm ring-2 ring-white">✨</div>
+            </div>
+
+            <div class="flex-1 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-slate-900">@Model.FullName</h2>
+                <p class="text-slate-500">Thành viên từ: @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+                
+                <div class="mt-4 flex flex-wrap justify-center gap-3 md:justify-start items-center">
+                    <div class="flex items-center gap-1 rounded-lg bg-mint/60 px-3 py-1 ring-1 ring-teal-200">
+                        <span class="text-sm font-semibold text-teal-800">🔥 @Model.Points Điểm tri thức</span>
+                        <button onclick="showRules()" class="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/50 text-[10px] font-bold text-teal-700 transition hover:bg-teal-100 hover:scale-110">
+                            i
+                        </button>
+                    </div>
+                    <span class="rounded-lg bg-sky-100 px-3 py-1 text-sm font-semibold text-sky-800 ring-1 ring-sky-200">
+                        🎓 Cấp độ: @(Model.Points > 50 ? "Thông thái" : "Người tìm kiếm")
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-10 border-t border-white/40 pt-8">
+            <div class="mb-2 flex items-center justify-between">
+                <span class="text-sm font-bold text-slate-700 uppercase tracking-wider">Tiến độ hoàn thành khóa học</span>
+                <span class="text-sm font-bold text-teal-700">@progress%</span>
+            </div>
+            <div class="h-4 w-full rounded-full bg-white/50 shadow-inner ring-1 ring-white/60">
+                <div class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-sky-400 transition-all duration-1000 shadow-sm" 
+                     style="width: @progress%"></div>
+            </div>
+            <p class="mt-2 text-xs text-slate-500 italic">* Hoàn thành các bài Quiz để tăng tiến độ và nhận điểm!</p>
+        </div>
+    </div>
+
+    <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <div class="rounded-[2rem] border border-white/50 bg-white/40 p-6 shadow-glass backdrop-blur-xl">
+            <h3 class="mb-4 flex items-center gap-2 text-lg font-bold text-slate-800">🏆 Huy hiệu đạt được</h3>
+            <div class="flex flex-wrap gap-4">
+                <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/60 shadow-sm transition hover:scale-110" title="Gia nhập">🌱</div>
+                <div class="relative flex h-16 w-16 items-center justify-center rounded-2xl @(Model.Points >= 20 ? "bg-sunny/80" : "bg-slate-200 opacity-40") shadow-sm transition hover:scale-110">
+                    🛡️ @if(Model.Points < 20) { <span class="absolute -top-1 -right-1 text-[10px]">🔒</span> }
+                </div>
+                <div class="relative flex h-16 w-16 items-center justify-center rounded-2xl @(Model.Points >= 50 ? "bg-emerald-300/80" : "bg-slate-200 opacity-40") shadow-sm transition hover:scale-110">
+                    💎 @if(Model.Points < 50) { <span class="absolute -top-1 -right-1 text-[10px]">🔒</span> }
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-[2rem] border border-white/50 bg-white/40 p-6 shadow-glass backdrop-blur-xl">
+            <h3 class="mb-4 flex items-center gap-2 text-lg font-bold text-slate-800">🚀 Tiếp tục học nào!</h3>
+            <a asp-controller="Lessons" asp-action="Index" class="inline-flex w-full items-center justify-center rounded-xl bg-teal-800 py-3 text-sm font-bold text-white transition hover:bg-teal-900">Vào kho bài học</a>
+        </div>
+    </div>
+
+    <div class="mt-8 overflow-hidden rounded-[2rem] border border-white/50 bg-white/40 p-6 shadow-glass backdrop-blur-xl" data-aos="fade-up">
+        <h3 class="mb-6 flex items-center gap-2 text-lg font-bold text-slate-800">📅 Nhật ký học tập</h3>
+
+        @if (ViewBag.History != null && ((IEnumerable<dynamic>)ViewBag.History).Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-200/60 text-slate-500 uppercase text-[10px] tracking-widest">
+                            <th class="pb-3 pl-2">Tên bài học</th>
+                            <th class="pb-3">Ngày hoàn thành</th>
+                            <th class="pb-3 text-right pr-2">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100/50">
+                        @foreach (var item in ViewBag.History)
+                        {
+                            <tr class="group transition hover:bg-white/30">
+                                <td class="py-4 pl-2 font-medium text-slate-700">@item.LessonTitle</td>
+                                <td class="py-4 text-slate-500">@item.Date.ToString("HH:mm - dd/MM/yyyy")</td>
+                                <td class="py-4 text-right pr-2">
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-700">Hoàn thành</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="py-10 text-center text-slate-500 italic">Bạn chưa hoàn thành bài học nào.</p>
+        }
+    </div>
+</div>
+
+<script>
+    function showRules() {
+        Swal.fire({
+            title: '<span class="text-teal-800 font-bold">📜 Quy tắc tri thức</span>',
+            html: `
+                <div class="text-left text-sm space-y-3 p-2 border-t border-slate-100 mt-4">
+                    <p>✅ <b>Hoàn thành Quiz:</b> Đúng 100% nhận ngay 10 điểm.</p>
+                    <p>🏆 <b>Huy hiệu:</b> Mở khóa mốc 20 điểm (🛡️) và 50 điểm (💎).</p>
+                    <p>📈 <b>Tiến độ:</b> Dựa trên tỉ lệ số bài học bạn đã chinh phục.</p>
+                </div>`,
+            confirmButtonText: 'Đã hiểu!',
+            confirmButtonColor: '#0D9488',
+            background: '#F0FDFA'
+        });
+    }
+</script>

@@ -1,0 +1,154 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WebGiaoDucGioiTinh.Models
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hành Trang Tuổi Trẻ</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        tailwind.config = {
+        theme: {
+        extend: {
+        colors: {
+        'brand-blue': '#0ea5e9',
+        'brand-pink': '#f472b6',
+        'brand-purple': '#a855f7',
+        'brand-cyan': '#22d3ee',
+        }
+        }
+        }
+        }
+    </script>
+    <style>
+        .shadow-glass {
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+
+        .glass-base {
+        background-color: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="mb-0 min-h-screen flex flex-col antialiased" style="background: linear-gradient(135deg, #f0f9ff 0%, #fae8f0 100%);">
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 pt-4 sm:px-6 lg:px-8">
+        <nav class="mx-auto max-w-6xl rounded-full border border-white/50 bg-white/50 px-5 py-3 shadow-glass backdrop-blur-xl supports-[backdrop-filter]:bg-white/45 sm:px-7">
+            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
+                <div class="flex items-center justify-between gap-4">
+                    <a asp-controller="Home" asp-action="Index" class="group flex min-w-0 shrink items-center gap-2 rounded-full focus:outline-none">
+                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-blue/20 to-brand-pink/20 shadow-sm ring-1 ring-white/60" aria-hidden="true">
+                            <svg viewBox="0 0 100 100" class="h-6 w-6 drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M48,35 c0,-9.9 8.1,-18 18,-18 s18,8.1 18,18 s-8.1,18 -18,18 s-18,-8.1 -18,-18 M84,17 l8,-8 M92,9 h-12 M92,9 v12"
+                                      fill="none" stroke="#0ea5e9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M16,65 c0,-9.9 8.1,-18 18,-18 s18,8.1 18,18 s-8.1,18 -18,18 s-18,-8.1 -18,-18 M34,83 v12 M25,90 h18"
+                                      fill="none" stroke="#f472b6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <span class="truncate text-base font-bold tracking-tight text-slate-900 transition group-hover:text-brand-blue sm:text-lg">Hành Trang Tuổi Trẻ</span>
+                    </a>
+
+                    <button type="button" id="nav-menu-toggle" class="inline-flex items-center justify-center rounded-xl border border-white/60 bg-white/50 p-2.5 text-slate-700 md:hidden">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" data-icon="open">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" data-icon="close">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div id="nav-panel" class="flex w-full flex-col gap-1.5 rounded-2xl border border-white/40 bg-white/50 p-3 shadow-inner backdrop-blur-md max-md:hidden md:w-auto md:flex-row md:items-center md:gap-3 md:border-0 md:bg-transparent md:p-0 md:shadow-none">
+                    <a asp-controller="Home" asp-action="Index" class="rounded-full px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-white hover:text-brand-blue md:px-4">Trang chủ</a>
+
+                    <div class="relative group flex items-center">
+                        <a asp-controller="SecretMailbox" asp-action="LookUp" class="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-white hover:text-brand-blue md:px-4">
+                            <span>Thông báo</span>
+                            @if (HttpContextAccessor.HttpContext.Session.GetString("LatestCode") != null)
+                            {
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-pink/80 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-pink"></span>
+                                </span>
+                            }
+                        </a>
+                    </div>
+
+                    <a asp-controller="Lessons" asp-action="Index" class="rounded-full px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-white hover:text-brand-blue md:px-4">Bài học</a>
+                    <a asp-controller="Quizzes" asp-action="GeneralQuiz" class="rounded-full px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-white hover:text-brand-blue md:px-4">Mini game</a>
+                    <a asp-controller="SecretMailbox" asp-action="Index" class="rounded-full px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-white hover:text-brand-blue md:px-4">Hộp thư thầm kín</a>
+                    <a href="javascript:void(0)" onclick="window.chatbase('open')" class="rounded-full px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-white hover:text-brand-blue md:px-4">Chatbox AI</a>
+
+                    <div class="flex items-center gap-2 border-t border-white/40 pt-2 md:ml-4 md:border-t-0 md:pt-0">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            var user = await UserManager.GetUserAsync(User);
+                            var displayName = user?.FullName?.Split(' ').LastOrDefault() ?? "Bạn";
+                            <div class="flex items-center gap-3">
+                                <a asp-controller="Account" asp-action="Profile" class="group flex items-center gap-2 rounded-full bg-white/60 px-3 py-1.5 ring-1 ring-white/60 transition hover:bg-white hover:shadow-sm">
+                                    <span class="text-sm font-bold text-slate-900">@displayName</span>
+                                </a>
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="inline">
+                                    <button type="submit" class="text-xs font-medium text-slate-400 hover:text-red-500 transition">Thoát</button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="rounded-full px-3.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-brand-blue transition">Đăng nhập</a>
+                            <a asp-controller="Account" asp-action="Register" class="rounded-full bg-brand-blue px-5 py-2.5 text-center text-sm font-bold text-white shadow-md shadow-brand-blue/20 transition hover:bg-sky-600 hover:scale-105">Đăng ký</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="flex-1 pt-24 pb-12 sm:pt-28 md:pt-32">
+        @RenderBody()
+    </main>
+
+    <footer class="mt-auto border-t border-white/40 glass-base px-4 py-8 supports-[backdrop-filter]:bg-white/40 sm:px-6">
+        <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-center text-sm text-slate-500 sm:flex-row sm:text-left">
+            <span class="font-medium">&copy; 2026 Giáo dục giới tính.</span>
+            <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 sm:justify-end">
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="text-xs font-bold text-slate-400 hover:text-brand-blue">Quản trị</a>
+                }
+                <a asp-controller="Home" asp-action="Privacy" class="font-bold text-brand-blue hover:text-sky-600 hover:underline">Riêng tư</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+        (function () {
+        var btn = document.getElementById('nav-menu-toggle');
+        var panel = document.getElementById('nav-panel');
+        if (!btn || !panel) return;
+        btn.addEventListener('click', function () {
+        panel.classList.toggle('max-md:hidden');
+        });
+        })();
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="dOK-jjdgLy6cjyqtS3DlR";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>

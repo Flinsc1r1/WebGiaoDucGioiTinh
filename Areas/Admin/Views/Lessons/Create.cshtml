@@ -1,0 +1,70 @@
+@model WebGiaoDucGioiTinh.Models.Lesson
+
+@{
+    ViewData["Title"] = "Thêm bài học mới";
+}
+
+<div class="mx-auto max-w-4xl p-4">
+    <div class="mb-6 flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-slate-800">Thêm bài học mới</h1>
+        <a asp-action="Index" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50">
+            Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="rounded-xl bg-white p-6 shadow-sm border border-slate-100">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="mb-4 text-sm text-red-600"></div>
+
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Tiêu đề -->
+                <div>
+                    <label asp-for="Title" class="mb-1 block text-sm font-medium text-slate-700">Tiêu đề bài học</label>
+                    <input asp-for="Title" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500" placeholder="Nhập tiêu đề..." />
+                    <span asp-validation-for="Title" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Danh mục -->
+                <div>
+                    <label asp-for="CategoryId" class="mb-1 block text-sm font-medium text-slate-700">Danh mục</label>
+                    <select asp-for="CategoryId" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500" asp-items="ViewBag.CategoryId">
+                        <option value="">-- Chọn danh mục --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- ĐƯỜNG DẪN ẢNH GOOGLE -->
+                <div>
+                    <label asp-for="ImageUrl" class="mb-1 block text-sm font-medium text-slate-700">Đường dẫn hình ảnh từ Google (URL)</label>
+                    <input asp-for="ImageUrl" type="text" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500" placeholder="Chuột phải vào ảnh trên Google -> Chọn Sao chép địa chỉ hình ảnh rồi dán vào đây..." />
+                    <span asp-validation-for="ImageUrl" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Link Video YouTube -->
+                <div>
+                    <label asp-for="VideoUrl" class="mb-1 block text-sm font-medium text-slate-700">Đường dẫn Video YouTube (Tùy chọn)</label>
+                    <input asp-for="VideoUrl" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500" placeholder="Ví dụ: https://www.youtube.com/watch?v=..." />
+                    <span asp-validation-for="VideoUrl" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Nội dung bài học -->
+                <div>
+                    <label asp-for="Content" class="mb-1 block text-sm font-medium text-slate-700">Nội dung bài học</label>
+                    <textarea asp-for="Content" rows="8" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500" placeholder="Nhập nội dung bài học chi tiết vào đây..."></textarea>
+                    <span asp-validation-for="Content" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Nút bấm xử lý -->
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-700 focus:outline-none">
+                        Tạo bài học
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
