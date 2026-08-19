@@ -120,18 +120,29 @@
         @RenderBody()
     </main>
 
-    <footer class="mt-auto border-t border-white/40 glass-base px-4 py-8 supports-[backdrop-filter]:bg-white/40 sm:px-6">
-        <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-center text-sm text-slate-500 sm:flex-row sm:text-left">
+<footer class="mt-auto border-t border-white/40 glass-base px-4 py-8 supports-[backdrop-filter]:bg-white/40 sm:px-6">
+    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-center text-sm text-slate-500 sm:flex-row sm:text-left">
+        
+        <!-- Phần bản quyền & Hotline -->
+        <div class="flex flex-col sm:flex-row items-center gap-4">
             <span class="font-medium">&copy; 2026 Giáo dục giới tính.</span>
-            <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 sm:justify-end">
-                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                {
-                    <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="text-xs font-bold text-slate-400 hover:text-brand-blue">Quản trị</a>
-                }
-                <a asp-controller="Home" asp-action="Privacy" class="font-bold text-brand-blue hover:text-sky-600 hover:underline">Riêng tư</a>
-            </div>
+            <span class="text-slate-400 hidden sm:inline">|</span>
+            <a href="tel:0792399147" class="font-semibold text-rose-500 hover:underline">
+                Hotline: 0782.399.147
+            </a>
         </div>
-    </footer>
+
+        <!-- Các liên kết bên phải (Quản trị, Riêng tư) -->
+        <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 sm:justify-end">
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="text-xs font-bold text-slate-400 hover:text-brand-blue">Quản trị</a>
+            }
+            <a asp-controller="Home" asp-action="Privacy" class="font-bold text-brand-blue hover:text-sky-600 hover:underline">Riêng tư</a>
+        </div>
+
+    </div>
+</footer>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
